@@ -76,7 +76,7 @@
     </header>
     <section>
         <h2>Formulário de Cadastro</h2>
-        <form action="add.php" method="post">
+        <form action="add.php" method="post" enctype="multipart/form-data">
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" required>
 
@@ -87,7 +87,7 @@
             <input type="date" id="dataColheita" name="dataColheita" required>
 
             <label for="imagem">Imagem</label>
-            <input type="file" name="imagem" id="imagem">
+            <input type="file" name="imagem" id="imagem" accept="image/*" required>
             <button type="submit">Salvar</button>
         </form>
     </section>

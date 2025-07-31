@@ -1,20 +1,34 @@
 <?php
 include "util.php";
 $Conn = conectar();
-$varSQL = "insert into alunos (nome, email, telefone, legal, engracado, sexo, curso) values (:nome, :email, :telefone, :legal, :engracado, :sexo, :curso);";
+$varSQL = "insert into feiralivredata (nome, preco, data_colheita, imagem) values (:nome, :preco, :data_colheita, :imagem);";
 
 
 $insert = $Conn->prepare($varSQL);
 $insert->bindParam(':nome', $_POST['nome']);
-$insert->bindParam(':email', $_POST['email']);
-$insert->bindParam(':telefone', $_POST['telefone']);
-$legal = ($_POST['legal'] === 'sim') ? 1 : 0;
-$engracado = ($_POST['engracado'] === 'sim') ? 1 : 0;
-$insert->bindParam(':legal', $legal, PDO::PARAM_BOOL);
-$insert->bindParam(':engracado', $engracado, PDO::PARAM_BOOL);
-$sexo = $_POST['sexo'] === 'masculino' ? 'M' : ($_POST['sexo'] === 'feminino' ? 'F' : 'O');
-$insert->bindParam(':sexo', $sexo);
-$insert->bindParam(':curso', $_POST['curso']);
+$insert->bindParam(':preco', $_POST['preco']);
+$insert->bindParam(':data_colheita', $_POST['dataColheita']);
+
+if (isset($_FILES['imagem']) && $_FILES['imagem']['tmp_name']) {
+    $tmpName = $_FILES['imagem']['tmp_name'];
+    $imageInfo = getimagesize($tmpName);
+
+    if ($imageInfo['mime'] === 'image/png') {
+        // Converte PNG para JPEG
+        $image = imagecreatefrompng($tmpName);
+        ob_start();
+        imagejpeg($image, null, 90); // 90 é a qualidade
+        $jpegData = ob_get_clean();
+        imagedestroy($image);
+        $insert->bindParam(':imagem', $jpegData, PDO::PARAM_LOB);
+    } else {
+        // Se não for PNG, salva como está
+        $imageData = file_get_contents($tmpName);
+        $insert->bindParam(':imagem', $imageData, PDO::PARAM_LOB);
+    }
+} else {
+    $insert->bindValue(':imagem', null, PDO::PARAM_NULL);
+}
+
 $insert->execute();
-header("Location: alunos.php");
-?>
+header("Location: menu.php");

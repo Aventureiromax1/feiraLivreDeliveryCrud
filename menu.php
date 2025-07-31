@@ -31,7 +31,19 @@ include "util.php";
                         echo "<td>" . htmlspecialchars($row['nome']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['preco']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['data_colheita']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['imagem']) . "</td>";
+                        if (!empty($row['imagem'])) {
+                            $imgData = $row['imagem'];
+                            if (is_resource($imgData)) {
+                                $imgData = stream_get_contents($imgData);
+                            }
+                            // Detecta o tipo MIME
+                            $finfo = new finfo(FILEINFO_MIME_TYPE);
+                            $mimeType = $finfo->buffer($imgData);
+                            $imgBase64 = base64_encode($imgData);
+                            echo "<td><img src='data:$mimeType;base64,$imgBase64' alt='Imagem' style='max-width:100px; max-height:100px;'/></td>";
+                        } else {
+                            echo "<td>Sem imagem</td>";
+                        }
                         echo "<td>
                                 <form action='alterar.php' method='get' style='display:inline;'>
                                     <input type='hidden' name='id' value='" . htmlspecialchars($row['id_produto']) . "'>

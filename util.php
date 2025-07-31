@@ -3,7 +3,7 @@ $dbname = 'feiraLivreDeliveryData';
 //$dbname = 'feiraLivreData';
  function conectar($param = '') {
         if ($param == '') {
-            $param = 'pgsql:host=localhost; port=5432; dbname=feiraLivreDeliveryData; user=postgres; password=postgres';
+            $param = 'pgsql:host=localhost; port=5432; dbname=feiraLivreData; user=postgres; password=postgres';
         }
         try {
             $Conn = new PDO($param);

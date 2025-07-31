@@ -2,28 +2,30 @@
 include "util.php";
 $Conn = conectar();
 
-$varSQL = "SELECT * FROM alunos WHERE id = :id";
+// Busca os dados do produto no banco de dados
+$varSQL = "SELECT * FROM feiralivredata WHERE id_produto = :id";
 $select = $Conn->prepare($varSQL);
 $select->bindParam(':id', $_GET['id']);
 $select->execute();
-$linha = $select->fetch();
-$id = $linha['id'];
-$nome = $linha['nome'];
-$email = $linha['email'];
-$telefone = $linha['telefone'];
-$legal = ($linha['legal'] == 1) ? 'sim' : 'nao';
-$engracado = ($linha['engracado'] == 1) ? 'sim' : 'nao';
-$sexo = $linha['sexo'];
-$curso = $linha['curso'];
 
+// Pega a linha de resultado
+$linha = $select->fetch();
+
+// Atribui os dados a variáveis para facilitar o uso
+$id = $linha['id_produto'];
+$nome = $linha['nome'];
+$preco = $linha['preco'];
+$data_colheita = $linha['data_colheita'];
+// A variável $imagem contém os dados binários da imagem vindos do banco
+$imagem = $linha['imagem']; 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alterar Dados</title>
+    <title>Alterar Dados do Produto</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,9 +58,9 @@ $curso = $linha['curso'];
         label {
             margin-bottom: 5px;
             font-weight: bold;
-            color: #343a40;
+            color: #495057;
         }
-        input[type="text"], input[type="email"], input[type="tel"], select {
+        input[type="text"], input[type="date"], input[type="file"] {
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ced4da;
@@ -68,13 +70,17 @@ $curso = $linha['curso'];
             background-color: #007bff;
             color: #fff;
             border: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-size: 16px;
         }
         button:hover {
             background-color: #0056b3;
+        }
+        .imagem-atual-container {
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -83,58 +89,50 @@ $curso = $linha['curso'];
         <h1>Alterar Dados</h1>
     </header>
     <section>
-        <h2>Formulário</h2>
-        <form action="alter.php" method="post">
+        <h2>Formulário de Alteração</h2>
+        <form action="alter.php" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
-            <label for="nome">Nome:</label>
+
+            <label for="nome">Nome do Produto:</label>
             <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($nome); ?>" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+            <label for="preco">Preço:</label>
+            <input type="text" id="preco" name="preco" value="<?php echo htmlspecialchars($preco); ?>" required>
 
-            <label for="telefone">Telefone:</label>
-            <input type="tel" id="telefone" name="telefone" value="<?php echo htmlspecialchars($telefone); ?>" required>
+            <label for="data_colheita">Data da Colheita:</label>
+            <input type="date" id="data_colheita" name="data_colheita" value="<?php echo htmlspecialchars($data_colheita); ?>" required>
 
-            <label for="legal">Legal:</label>
-            <select id="legal" name="legal" required>
-                <option value="1" <?php echo $legal === 'sim' ? 'selected' : ''; ?>>Sim</option>
-                <option value="0" <?php echo $legal === 'nao' ? 'selected' : ''; ?>>Não</option>
-            </select>
-            <label for="engracado">Engraçado:</label>
-            <select id="engracado" name="engracado" required>
-                <option value="1" <?php echo $engracado === 'sim' ? 'selected' : ''; ?>>Sim</option>
-                <option value="0" <?php echo $engracado === 'nao' ? 'selected' : ''; ?>>Não</option>
-            </select>
-            <label for="sexo">Sexo:</label>
-            <select id="sexo" name="sexo" required>
-                <option value="M" <?php echo $sexo === 'M' ? 'selected' : ''; ?>>Masculino</option>
-                <option value="F" <?php echo $sexo === 'F' ? 'selected' : ''; ?>>Feminino</option>
-            </select>
-            <label for="curso">Curso:</label>
-        <select name="curso" id="curso">
-            <option value="INI1A" <?php echo $curso === 'INI1A' ? 'selected' : ''; ?>>INI1A</option>
-            <option value="INI1B" <?php echo $curso === 'INI1B' ? 'selected' : ''; ?>>INI1B</option>
-            <option value="INI2A" <?php echo $curso === 'INI2A' ? 'selected' : ''; ?>>INI2A</option>
-            <option value="INI2B" <?php echo $curso === 'INI2B' ? 'selected' : ''; ?>>INI2B</option>
-            <option value="INI3A" <?php echo $curso === 'INI3A' ? 'selected' : ''; ?>>INI3A</option>
-            <option value="INI3B" <?php echo $curso === 'INI3B' ? 'selected' : ''; ?>>INI3B</option>
-            <option value="INF1" <?php echo $curso === 'INF1' ? 'selected' : ''; ?>>INF1</option>
-            <option value="INF2" <?php echo $curso === 'INF2' ? 'selected' : ''; ?>>INF2</option>
-            <option value="INF3" <?php echo $curso === 'INF3' ? 'selected' : ''; ?>>INF3</option>
-            <option value="MEC1" <?php echo $curso === 'MEC1' ? 'selected' : ''; ?>>MEC1</option>
-            <option value="MEC2" <?php echo $curso === 'MEC2' ? 'selected' : ''; ?>>MEC2</option>
-            <option value="MEC3" <?php echo $curso === 'MEC3' ? 'selected' : ''; ?>>MEC3</option>
-            <option value="ELE1" <?php echo $curso === 'ELE1' ? 'selected' : ''; ?>>ELE1</option>
-            <option value="ELE2" <?php echo $curso === 'ELE2' ? 'selected' : ''; ?>>ELE2</option>
-            <option value="ELE3" <?php echo $curso === 'ELE3' ? 'selected' : ''; ?>>ELE3</option>
-            <option value="MECNOT1" <?php echo $curso === 'MECNOT1' ? 'selected' : ''; ?>>MECNOT1</option>
-            <option value="MECNOT2" <?php echo $curso === 'MECNOT2' ? 'selected' : ''; ?>>MECNOT2</option>
-            <option value="MECNOT3" <?php echo $curso === 'MECNOT3' ? 'selected' : ''; ?>>MECNOT3</option>
-            <option value="ELENOT1" <?php echo $curso === 'ELENOT1' ? 'selected' : ''; ?>>ELENOT1</option>
-            <option value="ELENOT2" <?php echo $curso === 'ELENOT2' ? 'selected' : ''; ?>>ELENOT2</option>
-            <option value="ELENOT3" <?php echo $curso === 'ELENOT3' ? 'selected' : ''; ?>>ELENOT3</option>
-        </select>
-        </select>
+            <div class="imagem-atual-container">
+                <label>Imagem Atual:</label>
+                <?php
+                // ✅ **CORREÇÃO APLICADA AQUI**
+                // Verifica se a variável $imagem, vinda do banco, não está vazia.
+                if (is_resource($imagem)) {
+    $imagem = stream_get_contents($imagem);
+}
+
+// Agora a variável $imagem contém uma string e a função irá funcionar
+$imgBase64 = base64_encode($imagem);
+                if (!empty($imagem)) {
+                    // Converte os dados binários da imagem para Base64.
+                    $imgBase64 = base64_encode($imagem);
+                    
+                    // Detecta o tipo MIME da imagem para usar no Data URI.
+                    $finfo = new finfo(FILEINFO_MIME_TYPE);
+                    $mimeType = $finfo->buffer($imagem);
+                    
+                    // Exibe a tag <img> com o Data URI no atributo src.
+                    echo '<div><img src="data:' . $mimeType . ';base64,' . $imgBase64 . '" alt="Imagem Atual do Produto" style="max-width: 150px; max-height: 150px; border-radius: 4px; border: 1px solid #ddd;"></div>';
+                } else {
+                    // Se não houver imagem, exibe uma mensagem.
+                    echo '<div>Nenhuma imagem cadastrada.</div>';
+                }
+                ?>
+            </div>
+
+            <label for="imagem_input">Alterar Imagem (opcional):</label>
+            <input type="file" id="imagem_input" name="imagem" accept="image/*">
+
             <button type="submit">Salvar Alterações</button>
         </form>
     </section>
