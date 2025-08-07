@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "util.php";
 $Conn = conectar();
 
@@ -17,11 +17,12 @@ $nome = $linha['nome'];
 $preco = $linha['preco'];
 $data_colheita = $linha['data_colheita'];
 // A variável $imagem contém os dados binários da imagem vindos do banco
-$imagem = $linha['imagem']; 
+$imagem = $linha['imagem'];
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,12 +34,14 @@ $imagem = $linha['imagem'];
             margin: 0;
             padding: 0;
         }
+
         header {
             background-color: #343a40;
             color: #fff;
             padding: 10px 20px;
             text-align: center;
         }
+
         section {
             max-width: 600px;
             margin: 20px auto;
@@ -47,25 +50,32 @@ $imagem = $linha['imagem'];
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             text-align: center;
             color: #343a40;
         }
+
         form {
             display: flex;
             flex-direction: column;
         }
+
         label {
             margin-bottom: 5px;
             font-weight: bold;
             color: #495057;
         }
-        input[type="text"], input[type="date"], input[type="file"] {
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"] {
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ced4da;
             border-radius: 4px;
         }
+
         button {
             background-color: #007bff;
             color: #fff;
@@ -76,14 +86,17 @@ $imagem = $linha['imagem'];
             transition: background-color 0.3s ease;
             font-size: 16px;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         .imagem-atual-container {
             margin-bottom: 15px;
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>Alterar Dados</h1>
@@ -100,41 +113,35 @@ $imagem = $linha['imagem'];
             <input type="text" id="preco" name="preco" value="<?php echo htmlspecialchars($preco); ?>" required>
 
             <label for="data_colheita">Data da Colheita:</label>
-            <input type="date" id="data_colheita" name="data_colheita" value="<?php echo htmlspecialchars($data_colheita); ?>" required>
+            <input type="date" id="data_colheita" name="data_colheita"
+                value="<?php echo htmlspecialchars($data_colheita); ?>" required>
 
             <div class="imagem-atual-container">
                 <label>Imagem Atual:</label>
                 <?php
-                // ✅ **CORREÇÃO APLICADA AQUI**
-                // Verifica se a variável $imagem, vinda do banco, não está vazia.
-                if (is_resource($imagem)) {
-    $imagem = stream_get_contents($imagem);
-}
-
-// Agora a variável $imagem contém uma string e a função irá funcionar
-$imgBase64 = base64_encode($imagem);
+                
+                if (is_resource($imagem)) {// verifica se a imagem veio corretamente do banco
+                    $imagem = stream_get_contents($imagem);//transforma a imagem em uma string
+                }
+                $imagemBase64 = base64_encode($imagem); //transforma a string em base64
                 if (!empty($imagem)) {
-                    // Converte os dados binários da imagem para Base64.
-                    $imgBase64 = base64_encode($imagem);
-                    
-                    // Detecta o tipo MIME da imagem para usar no Data URI.
-                    $finfo = new finfo(FILEINFO_MIME_TYPE);
-                    $mimeType = $finfo->buffer($imagem);
-                    
-                    // Exibe a tag <img> com o Data URI no atributo src.
-                    echo '<div><img src="data:' . $mimeType . ';base64,' . $imgBase64 . '" alt="Imagem Atual do Produto" style="max-width: 150px; max-height: 150px; border-radius: 4px; border: 1px solid #ddd;"></div>';
+                    $imagemBase64 = base64_encode($imagem);//transforma a string em base64
+                    $tipoMime = new finfo(FILEINFO_MIME_TYPE);//detecta o tipo do arquivo
+                    $mimeImagem = $tipoMime->buffer($imagem);//buffer retorna o tipo da imagem
+                    echo '<div><img src="data:' . $mimeImagem . ';base64,' . $imagemBase64 . '" alt="Imagem Atual do Produto" style="max-width: 150px; max-height: 150px; border-radius: 4px; border: 1px solid #ddd;"></div>';
+                    //exibe a imagem
                 } else {
                     // Se não houver imagem, exibe uma mensagem.
                     echo '<div>Nenhuma imagem cadastrada.</div>';
                 }
                 ?>
-            </div>
 
-            <label for="imagem_input">Alterar Imagem (opcional):</label>
-            <input type="file" id="imagem_input" name="imagem" accept="image/*">
+                <label for="imagem_input">Alterar Imagem (opcional):</label>
+                <input type="file" id="imagem_input" name="imagem" accept="image/*">
 
-            <button type="submit">Salvar Alterações</button>
+                <button type="submit">Salvar Alterações</button>
         </form>
     </section>
 </body>
+
 </html>

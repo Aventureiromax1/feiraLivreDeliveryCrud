@@ -11,23 +11,21 @@ $insert->bindParam(':data_colheita', $_POST['dataColheita']);
 
 if (isset($_FILES['imagem']) && $_FILES['imagem']['tmp_name']) {
     $tmpName = $_FILES['imagem']['tmp_name'];
-    $imageInfo = getimagesize($tmpName);
+    $imageInfo = getimagesize($tmpName);//info imagens
 
     if ($imageInfo['mime'] === 'image/png') {
-        // Converte PNG para JPEG
         $image = imagecreatefrompng($tmpName);
         ob_start();
-        imagejpeg($image, null, 90); // 90 é a qualidade
+        imagejpeg($image, null, 90);
         $jpegData = ob_get_clean();
         imagedestroy($image);
-        $insert->bindParam(':imagem', $jpegData, PDO::PARAM_LOB);
+        $insert->bindParam(':imagem', $jpegData);
     } else {
-        // Se não for PNG, salva como está
         $imageData = file_get_contents($tmpName);
-        $insert->bindParam(':imagem', $imageData, PDO::PARAM_LOB);
+        $insert->bindParam(':imagem', $imageData);
     }
 } else {
-    $insert->bindValue(':imagem', null, PDO::PARAM_NULL);
+    $insert->bindValue(':imagem', null);
 }
 
 $insert->execute();
