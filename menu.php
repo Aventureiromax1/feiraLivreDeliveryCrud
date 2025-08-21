@@ -1,7 +1,13 @@
 <?php
 include "util.php";
+session_start(); // Sempre no topo!
+if (!isset($_SESSION['usuario_id'])) {
+    // Se não tem crachá, expulsa da página.
+    header('Location: index.php?erro=acesso_negado');
+    exit();
+}
 $Conn = conectar();
-$selectArray = 'SELECT * FROM feiralivredata';
+$selectArray = 'SELECT * FROM feiralivredata order by id_produto asc';
 $select = $Conn->prepare($selectArray);
 $select->execute();
 
@@ -17,6 +23,10 @@ $select->execute();
 </head>
 
 <body>
+    <header>
+        <h1>Bem-vindo ao Menu da Feira Livre</h1>
+        <h2>Olá <?php echo isset($_SESSION['usuario_nome']) ? htmlspecialchars($_SESSION['usuario_nome']) : 'Usuário'; ?></h2>
+    </header>
     <table border="1">
         <tr>
             <td>Id</td>

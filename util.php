@@ -13,5 +13,7 @@ $dbname = 'feiraLivreDeliveryData';
             exit;
         }
     }
-
+    ini_set('session.cookie_lifetime', 86400); // 1 dia
+    ini_set('session.gc_maxlifetime', 86400);
+    session_start();
 ?>
