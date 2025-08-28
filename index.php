@@ -44,6 +44,8 @@
                 echo '<p style="color:red; text-align:center;">E-mail ou senha inválidos!</p>';
             }
         ?>
+        <p style="text-align:center; margin-top:16px;"><a href="EsqueciSenhaFront.php">Esqueceu a senha?</a></p>
+
         <p style="text-align:center; margin-top:16px;">Não tem uma conta? <a href="registrar.php">Registrar</a></p>
     </div>
 </body>
