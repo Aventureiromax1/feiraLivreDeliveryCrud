@@ -1,6 +1,5 @@
 <?php
 include "util.php";
-session_start(); // Sempre no topo!
 if (!isset($_SESSION['usuario_id'])) {
     // Se não tem crachá, expulsa da página.
     header('Location: index.php?erro=acesso_negado');
@@ -20,12 +19,20 @@ $select->execute();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feira</title>
     <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
-<body>
+<body class="menu-body">
     <header>
-        <h1>Bem-vindo ao Menu da Feira Livre</h1>
-        <h2>Olá <?php echo isset($_SESSION['usuario_nome']) ? htmlspecialchars($_SESSION['usuario_nome']) : 'Usuário'; ?></h2>
+        <section>
+            <h1>Bem-vindo ao Menu da Feira Livre</h1>
+            <h2>Olá <?php echo isset($_SESSION['usuario_nome']) ? htmlspecialchars($_SESSION['usuario_nome']) : 'Usuário'; ?></h2>
+        </section>
+        <nav>
+            <a href="logout.php">Logout</a>
+            <a href="profile.php"><button type="button"><i class="fas fa-user-circle"></i></button></a>
+        </nav>
+        
     </header>
     <table border="1">
         <tr>

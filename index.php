@@ -10,9 +10,6 @@
 <body>
     <?php
     session_start();
-    if (isset($_GET['erro'])) {
-        echo '<p style="color:red;">E-mail ou senha inválidos!</p>';
-    }
     if (isset($_GET['sucesso']) && $_GET['sucesso'] == 'registrado') {
         echo '<p style="color:green;">Registro realizado com sucesso! Faça seu login.</p>';
     }
@@ -42,6 +39,11 @@
             <button type="submit"
                 style="width:100%; padding:10px; background:#28a745; color:#fff; border:none; border-radius:4px; font-size:16px;">Entrar</button>
         </form>
+        <?php
+            if (isset($_GET['erro'])) {
+                echo '<p style="color:red; text-align:center;">E-mail ou senha inválidos!</p>';
+            }
+        ?>
         <p style="text-align:center; margin-top:16px;">Não tem uma conta? <a href="registrar.php">Registrar</a></p>
     </div>
 </body>

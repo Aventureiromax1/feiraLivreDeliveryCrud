@@ -64,3 +64,35 @@
  table {
      margin-bottom: 10px;
  }
+.menu-body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.menu-body header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Adicione estas regras para section e nav lado a lado */
+
+.menu-body nav {
+    
+    display: flex;
+    vertical-align: top;
+    justify-content: flex-end;
+    width: 49%;
+    box-sizing: border-box;
+}
+.menu-body button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.menu-body i{
+    font-size: 24px;
+    color: #333;
+}
